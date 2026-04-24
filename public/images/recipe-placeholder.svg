@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-labelledby="title desc">
+  <title id="title">Recipe image placeholder</title>
+  <desc id="desc">A warm gradient illustration of a plate and cutlery.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#fb7185"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" rx="40" fill="url(#bg)"/>
+  <circle cx="220" cy="160" r="92" fill="rgba(251,191,36,0.18)"/>
+  <circle cx="610" cy="330" r="120" fill="rgba(59,130,246,0.12)"/>
+  <g transform="translate(120 85)">
+    <rect x="0" y="0" width="560" height="330" rx="32" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
+    <circle cx="280" cy="165" r="88" fill="#0f172a" stroke="url(#accent)" stroke-width="12"/>
+    <circle cx="280" cy="165" r="48" fill="rgba(251,191,36,0.16)"/>
+    <path d="M108 88c12 0 22 10 22 22v64c0 12-10 22-22 22s-22-10-22-22v-64c0-12 10-22 22-22Zm0 108c8 0 14 6 14 14v52h-28v-52c0-8 6-14 14-14Z" fill="#e2e8f0"/>
+    <path d="M452 88c8 0 14 6 14 14v68c0 20-14 37-33 41v66h-24v-66c-19-4-33-21-33-41v-68c0-8 6-14 14-14s14 6 14 14v60h12v-60c0-8 6-14 14-14s14 6 14 14v60h12v-60c0-8 6-14 14-14Z" fill="#e2e8f0"/>
+    <path d="M182 249c28 24 62 36 98 36s70-12 98-36" fill="none" stroke="rgba(255,255,255,0.24)" stroke-width="10" stroke-linecap="round"/>
+    <path d="M236 130c20 10 44 16 64 16s44-6 64-16" fill="none" stroke="rgba(251,191,36,0.9)" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <text x="400" y="455" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="26" fill="#cbd5e1">Recipe image unavailable</text>
+</svg>

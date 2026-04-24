@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HighScore;
 use Illuminate\Http\Request;
 
 class MinigameController extends Controller
@@ -9,8 +10,10 @@ class MinigameController extends Controller
     /**
      * Get minigame configuration and food/foreign items
      */
-    public function getGameData()
+    public function getGameData(Request $request)
     {
+        $sessionId = $request->session()->getId();
+        
         $foodItems = [
             ['id' => 1, 'name' => 'Apple', 'emoji' => '🍎', 'type' => 'food'],
             ['id' => 2, 'name' => 'Banana', 'emoji' => '🍌', 'type' => 'food'],
@@ -33,16 +36,34 @@ class MinigameController extends Controller
             ['id' => 104, 'name' => 'Poison', 'emoji' => '☠️', 'type' => 'foreign'],
             ['id' => 105, 'name' => 'Sugar', 'emoji' => '🍬', 'type' => 'foreign'],
             ['id' => 106, 'name' => 'Fire', 'emoji' => '🔥', 'type' => 'foreign'],
+            ['id' => 107, 'name' => 'Donut', 'emoji' => '🍩', 'type' => 'foreign'],
+            ['id' => 108, 'name' => 'Candy', 'emoji' => '🍭', 'type' => 'foreign'],
+            ['id' => 109, 'name' => 'Soda', 'emoji' => '🥤', 'type' => 'foreign'],
+            ['id' => 110, 'name' => 'Chips', 'emoji' => '🥔', 'type' => 'foreign'],
+            ['id' => 111, 'name' => 'Chocolate Bar', 'emoji' => '🍫', 'type' => 'foreign'],
+            ['id' => 112, 'name' => 'Ice Cream', 'emoji' => '🍦', 'type' => 'foreign'],
         ];
+
+        // Get high scores
+        $topScores = HighScore::getTopScores(10);
+        $sessionScores = HighScore::getSessionScores($sessionId, 5);
+        $personalBest = HighScore::getPersonalBest($sessionId);
 
         return response()->json([
             'success' => true,
             'foodItems' => $foodItems,
             'foreignItems' => $foreignItems,
             'gameConfig' => [
-                'gameSpeed' => 2000, // milliseconds between spawning items
+                'gameSpeed' => 200, // milliseconds between spawning items (extremely fast)
                 'itemSize' => 50, // pixels
-                'gravity' => 5, // pixels per frame
+                'gravity' => 25, // pixels per frame (extremely fast falling)
+                'spawnRate' => 1.0, // initial spawn rate (maximum frequency)
+                'speedIncrease' => 0.2, // how quickly speed increases (maximum acceleration)
+            ],
+            'highScores' => [
+                'top' => $topScores,
+                'session' => $sessionScores,
+                'personalBest' => $personalBest,
             ]
         ]);
     }
@@ -52,16 +73,59 @@ class MinigameController extends Controller
      */
     public function saveScore(Request $request)
     {
-        $score = $request->input('score');
+        $score = $request->input('score', 0);
         $itemsCaught = $request->input('items_caught', 0);
+        $survivalTime = $request->input('survival_time', 0); // in seconds
+        $level = $request->input('level', 1);
+        
+        $sessionId = $request->session()->getId();
 
-        // TODO: Save to database if needed
+        // Save to database
+        $highScore = HighScore::create([
+            'session_id' => $sessionId,
+            'score' => $score,
+            'items_caught' => $itemsCaught,
+            'survival_time' => $survivalTime,
+            'level' => $level,
+        ]);
+
+        // Get updated high scores
+        $topScores = HighScore::getTopScores(10);
+        $sessionScores = HighScore::getSessionScores($sessionId, 5);
+        $personalBest = HighScore::getPersonalBest($sessionId);
         
         return response()->json([
             'success' => true,
-            'message' => 'Score saved',
-            'score' => $score,
-            'items_caught' => $itemsCaught,
+            'message' => 'Score saved successfully!',
+            'score' => $highScore,
+            'highScores' => [
+                'top' => $topScores,
+                'session' => $sessionScores,
+                'personalBest' => $personalBest,
+            ],
+            'isPersonalBest' => $personalBest && $personalBest->id === $highScore->id,
+        ]);
+    }
+
+    /**
+     * Get high scores leaderboard
+     */
+    public function getHighScores(Request $request)
+    {
+        $limit = $request->input('limit', 10);
+        $sessionId = $request->session()->getId();
+
+        $topScores = HighScore::getTopScores($limit);
+        $sessionScores = HighScore::getSessionScores($sessionId, 5);
+        $personalBest = HighScore::getPersonalBest($sessionId);
+
+        return response()->json([
+            'success' => true,
+            'highScores' => [
+                'top' => $topScores,
+                'session' => $sessionScores,
+                'personalBest' => $personalBest,
+            ]
         ]);
     }
 }
